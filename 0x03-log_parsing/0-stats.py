@@ -31,34 +31,26 @@ if __name__ == "__main__":
     count = 0
     total_size = 0
     status_code_count = {
-        "200": 0, "301": 0, "400": 0, "403": 0,
+        "200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
         "404": 0, "405": 0, "500": 0
     }
 
-    for line in sys.stdin:
-        match = parser(line)
-        count += 1
+    try:
+        for line in sys.stdin:
+            match = parser(line)
+            if match:
+                ip, date, status, size = match.groups()
+                try:
+                    total_size += int(size)
+                    if status in status_code_count:
+                        status_code_count[status] += 1
+                except ValueError:
+                    continue
 
-        if match:
-            ip, date, status, size = match.groups()
-            try:
-                total_size += int(size)
-            except Exception as e:
-                print(e)
-            if status in status_code_count.keys():
-                status_code_count[status] += 1
-        else:
-            continue
+                count += 1
+                if count == 10:
+                    print_statistics(total_size, status_code_count)
+                    count = 0
 
-        try:
-            if count == 10:
-                print(f'File size: {total_size}')
-                for code, num in status_code_count.items():
-                    if num > 0:
-                        print(f"{code}: {num}")
-                count = 0
-        except KeyboardInterrupt:
-            print(f'File size: {total_size}')
-            for code, num in status_code_count.items():
-                if num > 0:
-                    print(f"{code}: {num}")
+    except KeyboardInterrupt:
+        print_statistics(total_size, status_code_count)
