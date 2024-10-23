@@ -23,7 +23,7 @@ def parser(line):
         r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] '
         r'"GET /projects/\d+ HTTP/1\.1" (\d{3}) (\d+)$'
         )
-    
+
     return re.match(pattern, line.strip())
 
 
@@ -34,9 +34,10 @@ def print_statistics(total_size, status_code_count):
         if status_code_count[code] > 0:
             print(f"{code}: {status_code_count[code]}")
 
+
 for line in sys.stdin:
     match = parser(line)
-    count+=1
+    count += 1
 
     if match:
         ip, date, status, size = match.groups()
@@ -45,7 +46,7 @@ for line in sys.stdin:
         except Exception as e:
             print(e)
         if status in status_code_count.keys():
-            status_code_count[status]+=1
+            status_code_count[status] += 1
     else:
         continue
 
@@ -61,4 +62,3 @@ for line in sys.stdin:
         for code, num in status_code_count.items():
             if num > 0:
                 print(f"{code}: {num}")
-
