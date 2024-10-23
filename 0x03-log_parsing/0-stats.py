@@ -4,14 +4,6 @@ import sys
 import re
 
 
-count = 0
-total_size = 0
-status_code_count = {
-    "200": 0, "301": 0, "400": 0, "403": 0,
-    "404": 0, "405": 0, "500": 0
-}
-
-
 def parser(line):
     """Check line for the format
     <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> \
@@ -35,30 +27,38 @@ def print_statistics(total_size, status_code_count):
             print(f"{code}: {status_code_count[code]}")
 
 
-for line in sys.stdin:
-    match = parser(line)
-    count += 1
+if __name__ == "__main__":
+    count = 0
+    total_size = 0
+    status_code_count = {
+        "200": 0, "301": 0, "400": 0, "403": 0,
+        "404": 0, "405": 0, "500": 0
+    }
 
-    if match:
-        ip, date, status, size = match.groups()
+    for line in sys.stdin:
+        match = parser(line)
+        count += 1
+
+        if match:
+            ip, date, status, size = match.groups()
+            try:
+                total_size += int(size)
+            except Exception as e:
+                print(e)
+            if status in status_code_count.keys():
+                status_code_count[status] += 1
+        else:
+            continue
+
         try:
-            total_size += int(size)
-        except Exception as e:
-            print(e)
-        if status in status_code_count.keys():
-            status_code_count[status] += 1
-    else:
-        continue
-
-    try:
-        if count > 10:
+            if count == 10:
+                print(f'File size: {total_size}')
+                for code, num in status_code_count.items():
+                    if num > 0:
+                        print(f"{code}: {num}")
+                count = 0
+        except KeyboardInterrupt:
             print(f'File size: {total_size}')
             for code, num in status_code_count.items():
                 if num > 0:
                     print(f"{code}: {num}")
-            count = 0
-    except KeyboardInterrupt:
-        print(f'File size: {total_size}')
-        for code, num in status_code_count.items():
-            if num > 0:
-                print(f"{code}: {num}")
