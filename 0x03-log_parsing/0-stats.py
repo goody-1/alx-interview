@@ -34,7 +34,6 @@ if __name__ == "__main__":
         "200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
         "404": 0, "405": 0, "500": 0
     }
-
     try:
         for line in sys.stdin:
             match = parser(line)
@@ -52,5 +51,9 @@ if __name__ == "__main__":
                     print_statistics(total_size, status_code_count)
                     count = 0
 
+        if count > 0:
+            print_statistics(total_size, status_code_count)
+
     except KeyboardInterrupt:
         print_statistics(total_size, status_code_count)
+        raise
