@@ -12,8 +12,8 @@ def parser(line):
     return: True or False
     """
     pattern = (
-        r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[(.*?)\] '
-        r'"GET /projects/\d+ HTTP/1\.1" (\d{3}) (\d+)$'
+        r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*-\s*\[(.*?)\]\s*'
+        r'"GET /projects/\d+ HTTP/1\.1"\s*(\d{3}) (\d+)$'
         )
 
     return re.match(pattern, line.strip())
@@ -50,6 +50,9 @@ if __name__ == "__main__":
                 if count == 10:
                     print_statistics(total_size, status_code_count)
                     count = 0
+            else:
+                # print(line)
+                pass
 
         if count > 0:
             print_statistics(total_size, status_code_count)
