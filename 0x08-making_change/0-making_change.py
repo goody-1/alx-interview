@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 
+"""This programs determines the fewest number of coins needed to meet a
+given amount total, given a pile of coins of different values.
+"""
+
+
 def makeChange(coins, total):
+    """Function to make change"""
     if total <= 0:
         return 0
 
